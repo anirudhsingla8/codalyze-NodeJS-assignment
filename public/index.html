@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+
+    <title>ChatApp</title>
+</head>
+<body class="chat">
+<form id="message-form">
+    <!-- <input name="message" type="text" placeholder="Message" autofocus autocomplete="off" /> -->
+    <h3>File Changed At</h3> <div id="changed-at"></div>
+    <h3>Tail</h3>
+    <p id="taillines"></p>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+<script>
+    let socket = io();
+
+    // connection with server
+    socket.on("connect", () => {
+        console.log("server connected");
+    });
+
+    // message listener from server
+    socket.on("fileChanged", lines =>  {
+        console.log(lines.text);
+        document.getElementById("taillines").innerHTML = lines.text;
+        document.getElementById("changed-at").innerHTML = lines.changedAt;
+    });
+
+    // when disconnected from server
+    socket.on("disconnect", () =>  {
+        console.log("Disconnect from server");
+    });
+</script>
+<style>
+    #taillines {
+        white-space: pre-wrap;
+        width: 900px;
+        border: 15px solid green;
+        padding: 50px;
+        margin: 20px;
+        font-size: 20px;
+    }
+</style>
+</body>
+</html>
